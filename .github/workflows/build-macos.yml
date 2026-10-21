@@ -1,5 +1,7 @@
 name: Build macOS (VST3 + AU + Standalone)
 on: [push, workflow_dispatch]
+permissions:
+  contents: write
 jobs:
   build:
     runs-on: macos-14
@@ -23,3 +25,7 @@ jobs:
         with:
           name: RepartoChain-Mac
           path: out
+      - name: Publicar en Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create mac-v1.1.${{ github.run_number }} out/* --title "Reparto Chain Mac" --notes "Build macOS (completo + Lite)"
