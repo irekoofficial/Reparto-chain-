@@ -1,0 +1,25 @@
+name: Build macOS (VST3 + AU + Standalone)
+on: [push, workflow_dispatch]
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: "Configure (Mac universal, Apple Silicon e Intel)"
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET=10.13
+      - name: Build
+        run: cmake --build build --config Release --parallel
+      - name: Firma ad-hoc y paquete
+        run: |
+          set -e
+          mkdir -p zip
+          mkdir -p pkgroot/Library/Audio/Plug-Ins/VST3 pkgroot/Library/Audio/Plug-Ins/Components pkgroot/Applications out zip
+          find build -maxdepth 6 -name "*.vst3" -print0 | while IFS= read -r -d '' b; do codesign --force --deep -s - "$b"; cp -R "$b" pkgroot/Library/Audio/Plug-Ins/VST3/; cp -R "$b" zip/; done
+          find build -maxdepth 6 -name "*.component" -print0 | while IFS= read -r -d '' b; do codesign --force --deep -s - "$b"; cp -R "$b" pkgroot/Library/Audio/Plug-Ins/Components/; cp -R "$b" zip/; done
+          find build -maxdepth 6 -name "*.app" -print0 | while IFS= read -r -d '' b; do codesign --force --deep -s - "$b"; cp -R "$b" pkgroot/Applications/; cp -R "$b" zip/; done
+          pkgbuild --root pkgroot --identifier com.ireko.repartochain --version 1.1.0 --install-location / out/RepartoChain-Mac.pkg
+          ditto -c -k --keepParent zip out/RepartoChain-Mac-manual.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RepartoChain-Mac
+          path: out
