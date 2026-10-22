@@ -1,0 +1,21 @@
+name: Vista previa real en macOS
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  preview:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - run: cmake -B bp -DCMAKE_BUILD_TYPE=Release -DRV_MAC_PREVIEW=ON -DCMAKE_OSX_ARCHITECTURES=arm64
+      - run: cmake --build bp --config Release --parallel --target MacPreviewLite MacPreviewFull
+      - name: Capturas
+        run: |
+          mkdir -p shots
+          P=$(find bp -name MacPreviewLite -type f | head -1); "$P" "$PWD/shots/mac-lite.png"
+          P=$(find bp -name MacPreviewFull -type f | head -1); "$P" "$PWD/shots/mac-full.png"
+      - uses: actions/upload-artifact@v4
+        with: { name: mac-previews, path: shots }
+      - name: Publicar
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: gh release create preview-${{ github.run_number }} shots/* --title "Vista previa macOS" --notes "Capturas reales en macOS"

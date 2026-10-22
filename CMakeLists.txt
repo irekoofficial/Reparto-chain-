@@ -44,3 +44,19 @@ target_compile_definitions(RepartoChainLite PUBLIC RV_LITE=1 JUCE_WEB_BROWSER=0 
 target_link_libraries(RepartoChainLite PRIVATE
     juce::juce_audio_utils juce::juce_audio_processors juce::juce_gui_basics
     PUBLIC juce::juce_recommended_config_flags juce::juce_recommended_warning_flags)
+
+# Capturas de la interfaz (solo para revisar el render en macOS): cmake -DRV_MAC_PREVIEW=ON
+if(RV_MAC_PREVIEW)
+  foreach(v Full Lite)
+    juce_add_console_app(MacPreview${v} PRODUCT_NAME MacPreview${v})
+    if(v STREQUAL "Lite")
+      target_sources(MacPreview${v} PRIVATE tools/macpreview/main.cpp Source/PluginProcessor.cpp Source/LiteEditor.cpp)
+      target_compile_definitions(MacPreview${v} PRIVATE RV_LITE=1)
+    else()
+      target_sources(MacPreview${v} PRIVATE tools/macpreview/main.cpp Source/PluginProcessor.cpp Source/PluginEditor.cpp)
+    endif()
+    target_include_directories(MacPreview${v} PRIVATE Source)
+    target_compile_definitions(MacPreview${v} PRIVATE JUCE_MODAL_LOOPS_PERMITTED=1 JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 JUCE_PLUGINHOST_AU=0 JUCE_PLUGINHOST_VST3=0)
+    target_link_libraries(MacPreview${v} PRIVATE juce::juce_gui_basics juce::juce_audio_processors juce::juce_recommended_config_flags)
+  endforeach()
+endif()
