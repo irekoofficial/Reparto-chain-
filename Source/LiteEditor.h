@@ -24,8 +24,7 @@ struct LiteScene : public juce::Component, private juce::Timer {
             // titulo y logo sobre el cielo (igual que la version completa, en pequeno)
             g.setFont(juce::FontOptions(32.f, juce::Font::bold | juce::Font::italic));
             g.setColour(juce::Colour(0x99000000)); g.drawText("REPARTO CHAIN", 17, 11, 330, 40, juce::Justification::left);
-            g.setGradientFill(juce::ColourGradient(juce::Colour(0xffffe27a), 0, 10, juce::Colour(0xffe29a00), 0, 44, false));
-            g.drawText("REPARTO CHAIN", 15, 9, 330, 40, juce::Justification::left);
+            IrekoLogo::gradText(g, "REPARTO CHAIN", juce::Font(juce::FontOptions(32.f, juce::Font::bold | juce::Font::italic)), 15, 9, 330, 40, juce::ColourGradient(juce::Colour(0xffffe27a), 0, 10, juce::Colour(0xffe29a00), 0, 44, false));
             g.setColour(RVLook::pink); g.fillRoundedRectangle(262.f, 20.f, 44.f, 18.f, 9.f);
             g.setColour(juce::Colours::white); g.setFont(juce::FontOptions(11.f, juce::Font::bold)); g.drawText("LITE", 262, 20, 44, 18, juce::Justification::centred);
             IrekoLogo::drawPng(g, 14.f, 54.f, 44, true);

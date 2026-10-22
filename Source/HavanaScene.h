@@ -333,7 +333,7 @@ private:
         (void)W; juce::String a("REPARTO CHAIN");
         g.setFont(juce::FontOptions(40.f, juce::Font::bold | juce::Font::italic));
         for (int k = 3; k >= 1; --k) { g.setColour(C(0xffff3d9a).withAlpha(.10f * (.4f + s.neon))); for (int d = -k; d <= k; d += k) g.drawText(a, 26 + d, 14 + d, 420, 48, juce::Justification::left); }
-        g.setGradientFill(juce::ColourGradient(C(0xffffe27a), 0, 14, C(0xffe29a00), 0, 60, false)); g.drawText(a, 26, 14, 420, 48, juce::Justification::left);
+        IrekoLogo::gradText(g, a, juce::Font(juce::FontOptions(40.f, juce::Font::bold | juce::Font::italic)), 26, 14, 420, 48, juce::ColourGradient(C(0xffffe27a), 0, 14, C(0xffe29a00), 0, 60, false));
         (void)s; (void)t;
         IrekoLogo::drawPng(g, 26.f, 62.f, 36);
     }

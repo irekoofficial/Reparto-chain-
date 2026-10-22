@@ -59,4 +59,10 @@ namespace IrekoLogo {
         }
         g.drawImageAt(it->second, juce::roundToInt(x) - 6, juce::roundToInt(y) - 6);
     }
+    // Texto con degradado como Path (en macOS, drawText con degradado puede rellenar todo el area)
+    inline void gradText(juce::Graphics& g, const juce::String& txt, juce::Font f, float x, float y, float w, float h, juce::ColourGradient cg) {
+        juce::GlyphArrangement ga; ga.addLineOfText(f, txt, x, y + (h + f.getAscent() - f.getDescent()) * .5f);
+        juce::Path p; ga.createPath(p);
+        g.setGradientFill(cg); g.fillPath(p);
+    }
 }
